@@ -108,7 +108,7 @@ function unionNodes2(i, indexToDel, tmpString) {
                 flagToMore = 1;
                 tmpString = tmpString + '\n' + getString(dotUpdate[j]);
                 deleteNodes(node, firstNode, j);
-                indexToDel++; j++;  }  else break; }
+                indexToDel++; j++;      } else break;  }
         tmpString = tmpString + '"]';
         unionNodes4(flagToMore, indexToDel, i);
         dotUpdate[i] = tmpString;
@@ -289,10 +289,50 @@ function getPathArr(dot) {
 
 function addColors2(arrPath, i) {
     for (let j = 0; j < arrPath.length; j++) {
-        if ((!dotUpdate[i].includes('color = "green"') && (dotUpdate[i].includes('n' + arrPath[j] + ' ') || dotUpdate[i].includes('shape="circle"')))) {
+        if ((!dotUpdate[i].includes('color = "green"') && (dotUpdate[i].includes('n' + arrPath[j] + ' ')))) {
             dotUpdate[i] = dotUpdate[i].substr(0, dotUpdate[i].lastIndexOf(']')) + dotUpdate[i].substr(dotUpdate[i].lastIndexOf(']') + 1);
             dotUpdate[i] = dotUpdate[i] + ' , style = "filled" , color = "green"]';
             break;
+        }
+    }
+}
+
+function isGreen(node) {
+    for (let i = 0; i < dotUpdate.length; i++) {
+        if (dotUpdate[i].includes(node) && dotUpdate[i].includes('green')) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function addColors3(first) {
+    let counter = 0;
+    for (let i = 0; i < dotUpdate.length; i++) {
+        if (dotUpdate[i].includes('->') && dotUpdate[i].split('->')[1].includes(first) && isGreen(dotUpdate[i].split('->')[0])) {
+            counter++;
+        }
+    }
+    return counter;
+}
+
+
+function addColors4(first) {
+    let counter = 0;
+    for (let i = 0; i < dotUpdate.length; i++) {
+        if (dotUpdate[i].includes('->') && dotUpdate[i].split('->')[0].includes(first) && isGreen(dotUpdate[i].split('-> ')[1].substring(0, dotUpdate[i].split('->')[1].indexOf('[')))) {
+            counter++;
+        }
+    }
+    return counter;
+}
+
+function addcolors1(j){
+    if (!dotUpdate[j].includes('color = "green"') && (dotUpdate[j].includes('shape="circle"'))) {
+        let first = dotUpdate[j].substring(0, dotUpdate[j].indexOf('['));
+        if (addColors3(first) > 0 && addColors4(first) > 0) {
+            dotUpdate[j] = dotUpdate[j].substr(0, dotUpdate[j].lastIndexOf(']')) + dotUpdate[j].substr(dotUpdate[j].lastIndexOf(']') + 1);
+            dotUpdate[j] = dotUpdate[j] + ' , style = "filled" , color = "green"]';
         }
     }
 }
@@ -304,6 +344,9 @@ function addColors(arrPath) {
         else {
             addColors2(arrPath, i);
         }
+    }
+    for (let j = 0; j < dotUpdate.length; j++) {
+        addcolors1(j);
     }
 }
 
@@ -351,7 +394,7 @@ function numOfPointersForCir(first) {
     return counter;
 }
 
-function addCircles2(j,first){
+function addCircles2(j, first) {
     if (dotUpdate[j].includes('->') && dotUpdate[j].split('->')[1].includes(first + ' ')) {
         dotUpdate[j] = dotUpdate[j].replace(first, 'n' + (dotUpdate.length - 1));
     }
@@ -363,7 +406,7 @@ function addCircles() {
         if (first != '' && numOfPointersForCir(first) > 1) {
             dotUpdate.splice(i, 0, 'n' + (dotUpdate.length) + ' [label="", shape="circle"]');
             for (let j = 0; j < dotUpdate.length; j++) {
-                addCircles2(j,first);
+                addCircles2(j, first);
             }
             dotUpdate.splice(dotUpdate.length - 1, 0, 'n' + (dotUpdate.length - 1) + ' -> ' + first + ' []');
         }
