@@ -4,7 +4,7 @@ import {parseJSon} from '../src/js/code-analyzer';
 import {substitution} from '../src/js/partB';
 import { part3 , delSpaces ,  removeExceptionsForDot , getString, getNodeIndex, makeString} from '../src/js/partC';
 
-/*
+
 describe('The javascript parser', () => {
     it('is parsing an VariableDec function correctly', () => {
         clearTable();
@@ -630,7 +630,7 @@ describe('The substitution parser', () => {
         assert.equal(actual,expected);
     });
 }); 
-*/
+
 describe('The cfg maker', () => {
     it('check unit test delspace function', () => {
         let codeToParse =`n1 -> n2 [ label = "true" ]`;
@@ -688,7 +688,7 @@ describe('The cfg maker', () => {
         let args =`'hi', 5, 2, [1,2,true]`;
         let x = (part3(parsedCode, codeToParse, args, globalTable)).split('\n');
         let actual = x[10];
-        let expected = `y > 2\" , shape = \"diamond\"]`;
+        let expected = `y = arr[1] + 1\" , shape = \"box\"]`;
         assert.equal(actual,expected);
     });
     it('check spart3 function - system test 2', () => {
@@ -717,7 +717,7 @@ describe('The cfg maker', () => {
         let args =`'hi', 5, 2, [true]`;
         let x = (part3(parsedCode, codeToParse, args, globalTable)).split('\n');
         let actual = x[8];
-        let expected = `y = arr[1] + 1\" , shape = \"box\"]`;
+        let expected = `y < 0\" , shape = \"diamond\" , style = \"filled\" , color = \"green\"]`;
         assert.equal(actual,expected);
     });
     it('check spart3 function - system test 3', () => {
@@ -747,10 +747,10 @@ describe('The cfg maker', () => {
         let args =`'hi la', 5, [true], 2`;
         let x = (part3(parsedCode, codeToParse, args, globalTable)).split('\n');
         let actual = x[7];
-        let expected = `n4 [label=\"(4)`;
+        let expected = `n3 [label=\"(4)`;
         assert.equal(actual,expected);
     });
-    it('check spart3 function - system test 3', () => {
+    it('check spart3 function - system test 4', () => {
         let codeToParse =`function foo(x, y, arr, z) {
             let i=0;
                 while (i<2) {
@@ -777,10 +777,10 @@ describe('The cfg maker', () => {
         let args =`'hi la', 5, [true], 2`;
         let x = (part3(parsedCode, codeToParse, args, globalTable)).split('\n');
         let actual = x[12];
-        let expected = `x = 3\" , shape = \"box\"]`;
+        let expected = `y > 2\" , shape = \"diamond\"]`;
         assert.equal(actual,expected);
     });
-    it('check spart3 function - system test 3', () => {
+    it('check spart3 function - system test 5', () => {
         let codeToParse =`function foo(x, y, z, arr) {
                 let i=0;
                 if (arr[2]){
@@ -810,10 +810,10 @@ describe('The cfg maker', () => {
         let args =`'shani', 5, 2, [1,2,true]`;
         let x = (part3(parsedCode, codeToParse, args, globalTable)).split('\n');
         let actual = x[12];
-        let expected = `y > 2\" , shape = \"diamond\" , style = \"filled\" , color = \"green\"]`;
+        let expected = `y = arr[1] + 1\" , shape = \"box\" , style = \"filled\" , color = \"green\"]`;
         assert.equal(actual,expected);
     });
-    it('check spart3 function - system test 3', () => {
+    it('check spart3 function - system test 6', () => {
         let codeToParse =`function foo(x, y, z, arr) {
                     return z;
                 }
@@ -827,7 +827,7 @@ describe('The cfg maker', () => {
         let expected = `n1 [label=\"(1)`;
         assert.equal(actual,expected);
     });
-    it('check spart3 function - system test 3', () => {
+    it('check spart3 function - system test 7', () => {
         let codeToParse =`function foo(x, y, z, arr) {
                 let i=0;
                 if (arr[2]){
@@ -857,10 +857,10 @@ describe('The cfg maker', () => {
         let args =`'shani', 5, 2, [1,2,false]`;
         let x = (part3(parsedCode, codeToParse, args, globalTable)).split('\n');
         let actual = x[12];
-        let expected = `y > 2\" , shape = \"diamond\"]`;
+        let expected = `y = arr[1] + 1\" , shape = \"box\"]`;
         assert.equal(actual,expected);
     });
-    it('check spart3 function - system test 3', () => {
+    it('check spart3 function - system test 8', () => {
         let codeToParse =`function foo(x, y, z, arr) {
                 let i=0;
                 if (arr[2]){
@@ -890,10 +890,10 @@ describe('The cfg maker', () => {
         let args =`'shani', 5, 2, [1,2,false]`;
         let x = (part3(parsedCode, codeToParse, args, globalTable)).split('\n');
         let actual = x[5];
-        let expected = `n3 [label=\"(3)`;
+        let expected = `n30 [label=\"(3)`;
         assert.equal(actual,expected);
     });
-    it('check spart3 function - system test 3', () => {
+    it('check spart3 function - system test 9', () => {
         let codeToParse =`function foo(x, y, z, arr) {
                 let i=0;
                 if (arr[2]){
@@ -923,10 +923,10 @@ describe('The cfg maker', () => {
         let args =`'shani', 5, 2, [1,2,false]`;
         let x = (part3(parsedCode, codeToParse, args, globalTable)).split('\n');
         let actual = x[8];
-        let expected = `y > 0\" , shape = \"diamond\"]`;
+        let expected = `i<2\" , shape = \"diamond\"]`;
         assert.equal(actual,expected);
     });
-    it('check spart3 function - system test 3', () => {
+    it('check spart3 function - system test 10', () => {
         let codeToParse =`function foo(x, y, z, arr) {
                 let i=0;
                 if (arr[2]){
@@ -956,7 +956,7 @@ describe('The cfg maker', () => {
         let args =`'shani', 5, 2, [1,2,false]`;
         let x = (part3(parsedCode, codeToParse, args, globalTable)).split('\n');
         let actual = x[10];
-        let expected = `y = arr[1] + 1\" , shape = \"box\"]`;
+        let expected = `y > 0\" , shape = \"diamond\"]`;
         assert.equal(actual,expected);
     });
 });

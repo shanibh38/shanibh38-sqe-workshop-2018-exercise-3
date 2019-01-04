@@ -108,12 +108,12 @@ function unionNodes2(i, indexToDel, tmpString) {
                 flagToMore = 1;
                 tmpString = tmpString + '\n' + getString(dotUpdate[j]);
                 deleteNodes(node, firstNode, j);
-                indexToDel++;        j++;}
-            else break;}
+                indexToDel++; j++;  }  else break; }
         tmpString = tmpString + '"]';
         unionNodes4(flagToMore, indexToDel, i);
         dotUpdate[i] = tmpString;
-        tmpString = ''; indexToDel = 0; }
+        tmpString = ''; indexToDel = 0;
+    }
 }
 
 function unionNodes() {
@@ -156,7 +156,7 @@ function changeShape1(i) {
 
 function changeShape2() {
     for (let i = 0; i < dotUpdate.length; i++) {
-        if (!dotUpdate[i].includes('->') && !dotUpdate[i].includes('shape') && dotUpdate[i]!='') {
+        if (!dotUpdate[i].includes('->') && !dotUpdate[i].includes('shape') && dotUpdate[i] != '') {
             dotUpdate[i] = dotUpdate[i].substr(0, dotUpdate[i].lastIndexOf(']')) + dotUpdate[i].substr(dotUpdate[i].lastIndexOf(']') + 1);
             dotUpdate[i] = dotUpdate[i] + ' , shape = "box"]';
         }
@@ -210,7 +210,7 @@ function extractArgs(argsDict) {
                 tmpVal.splice(i + 1, 1);
             }
             else
-                forBranch[0]='test';
+                forBranch[0] = 'test';
         }
     }
     // tmpVal = stringUnion(tmpVal);
@@ -289,7 +289,7 @@ function getPathArr(dot) {
 
 function addColors2(arrPath, i) {
     for (let j = 0; j < arrPath.length; j++) {
-        if (!dotUpdate[i].includes('color = "green"') && dotUpdate[i].includes('n' + arrPath[j] + ' ')) {
+        if ((!dotUpdate[i].includes('color = "green"') && (dotUpdate[i].includes('n' + arrPath[j] + ' ') || dotUpdate[i].includes('shape="circle"')))) {
             dotUpdate[i] = dotUpdate[i].substr(0, dotUpdate[i].lastIndexOf(']')) + dotUpdate[i].substr(dotUpdate[i].lastIndexOf(']') + 1);
             dotUpdate[i] = dotUpdate[i] + ' , style = "filled" , color = "green"]';
             break;
@@ -342,6 +342,34 @@ function findPath(dot, args, parseObj) {
     return theNodes;
 }
 
+function numOfPointersForCir(first) {
+    let counter = 0;
+    for (let i = 0; i < dotUpdate.length; i++) {
+        if (dotUpdate[i].includes('->') && dotUpdate[i].split('->')[1].includes(first + ' '))
+            counter++;
+    }
+    return counter;
+}
+
+function addCircles2(j,first){
+    if (dotUpdate[j].includes('->') && dotUpdate[j].split('->')[1].includes(first + ' ')) {
+        dotUpdate[j] = dotUpdate[j].replace(first, 'n' + (dotUpdate.length - 1));
+    }
+}
+
+function addCircles() {
+    for (let i = 0; i < dotUpdate.length - 1; i++) {
+        let first = getNodeIndex(dotUpdate[i]);
+        if (first != '' && numOfPointersForCir(first) > 1) {
+            dotUpdate.splice(i, 0, 'n' + (dotUpdate.length) + ' [label="", shape="circle"]');
+            for (let j = 0; j < dotUpdate.length; j++) {
+                addCircles2(j,first);
+            }
+            dotUpdate.splice(dotUpdate.length - 1, 0, 'n' + (dotUpdate.length - 1) + ' -> ' + first + ' []');
+        }
+    }
+}
+
 const part3 = (parsed, sourceCode, args, globalTable) => {
     dotUpdate = [];
     let cfg = esgraph(parsed.body[0].body);
@@ -351,6 +379,7 @@ const part3 = (parsed, sourceCode, args, globalTable) => {
     unionNodes();
     removeExceptions();
     removeDeletedNodes();
+    addCircles();
     changeShape();
     addNumbers();
     addColors(path);
@@ -358,4 +387,4 @@ const part3 = (parsed, sourceCode, args, globalTable) => {
     return dotUpdate;
 };
 
-export {part3 , delSpaces ,  removeExceptionsForDot , getString, getNodeIndex, makeString};
+export { part3, delSpaces, removeExceptionsForDot, getString, getNodeIndex, makeString };
